@@ -113,9 +113,10 @@ var _ = {};
     // like each(), but in addition to running the operation on all
     // the members, it also maintains an array of results.
     var mapArr = [];
-    _.each(collection, function(val){
-      
-    })
+    _.each(collection, function(value, key, collection){
+      mapArr.push(iterator(value,key,collection));
+    });
+    return mapArr;
   };
 
   /*
@@ -139,6 +140,9 @@ var _ = {};
   // Calls the method named by functionOrKey on each value in the list.
   // Note: you will nead to learn a bit about .apply to complete this.
   _.invoke = function(collection, functionOrKey, args) {
+     return _.map(collection, function(value, key, collection){
+       return functionOrKey.apply(value);
+     });
   };
 
   // Reduces an array or object to a single value by repetitively calling
