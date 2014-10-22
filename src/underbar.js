@@ -102,7 +102,7 @@ var _ = {};
     var uniqArr = [];
     _.each(array, function(val){
       if (uniqArr.indexOf(val) === -1) {uniqArr.push(val);}
-    })
+    });
     return uniqArr;
   };
 
@@ -141,7 +141,7 @@ var _ = {};
   // Note: you will nead to learn a bit about .apply to complete this.
   _.invoke = function(collection, functionOrKey, args) {
     return _.map(collection, function(value, key, collection){
-      return (typeof functionOrKey === 'function') ? functionOrKey.apply(value) 
+      return (typeof functionOrKey === 'function') ? functionOrKey.apply(value, args) 
       : value[functionOrKey].apply(value, args);
     });
   };
@@ -160,7 +160,13 @@ var _ = {};
   //     return total + number;
   //   }, 0); // should be 6
   _.reduce = function(collection, iterator, accumulator) {
-  };
+    var previousValue = accumulator;
+    if (previousValue === undefined) {previousValue = collection[0];}
+    _.each(collection, function(value){
+      previousValue = iterator(previousValue, value);
+    });
+    return previousValue;
+  }
 
   // Determine if the array or object contains a given value (using `===`).
   _.contains = function(collection, target) {
@@ -178,6 +184,7 @@ var _ = {};
   // Determine whether all of the elements match a truth test.
   _.every = function(collection, iterator) {
     // TIP: Try re-using reduce() here.
+    
   };
 
   // Determine whether any of the elements pass a truth test. If no iterator is
