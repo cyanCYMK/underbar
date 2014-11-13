@@ -417,19 +417,23 @@ var _ = {};
     _.each(arguments, function(arg, argIndex){
       args[argIndex] = Array.prototype.slice.apply(arg);
     });
-    var firstArg = args[0];
-    // i is index of value in 1st array
-    // j is index of arguments
-    for (var i=0; i<firstArg.length; i++){
-      for (var j=1; j<args.length; j++){
-        if (_.contains(args[j], firstArg[i])){
-          shared.push(firstArg[i]);
-          var index = args[j].indexOf(firstArg[i]);
-          firstArg.splice(i,1);
-          args[j].splice(index,1);
-        }
-      }
+    function compareArgs(args, shared){
+      var shared = typeof shared !== 'undefined' ? shared : [];
+      var argToCompare = args.shift();
+      if (args.length === 0) {return;}
+      _.each(argToCompare, function(value, index, argToCompare){
+        _.each(args, function(arg, argIndex, args){
+          if (_.contains(arg, value)) {
+            shared.push(value);
+            var i = arg.indexOf(value);
+            argToCompare.splice(index, 1);
+            arg.splice(i, 1);            
+          }
+        });
+      });
+      compareArgs(args, shared);
     }
+    compareArgs(args, shared);
     return shared;
   };
 
