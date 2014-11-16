@@ -414,24 +414,27 @@ var _ = {};
   _.intersection = function() {
     var args = [];
     var shared = [];
+    // make copy of arrays
     _.each(arguments, function(arg, argIndex){
       args[argIndex] = Array.prototype.slice.apply(arg);
     });
+    // adds arguments that are in all arrays into 'shared' array
     function compareArgs(args, shared){
-      var shared = typeof shared !== 'undefined' ? shared : [];
+      shared = typeof shared !== 'undefined' ? shared : [];
       var argToCompare = args.shift();
       if (args.length === 0) {return;}
       _.each(argToCompare, function(value, index, argToCompare){
-        _.each(args, function(arg, argIndex, args){
-          if (_.contains(arg, value)) {
-            shared.push(value);
-            var i = arg.indexOf(value);
-            argToCompare.splice(index, 1);
-            arg.splice(i, 1);            
-          }
+        var allContain = _.every(args, function(arg){
+          return _.contains(arg, value);
         });
+        if (allContain){
+          shared.push(value);
+          _.each(args, function(arg){
+            var i = arg.indexOf(value);
+            arg.splice(i, 1);
+          });
+        }
       });
-      compareArgs(args, shared);
     }
     compareArgs(args, shared);
     return shared;
